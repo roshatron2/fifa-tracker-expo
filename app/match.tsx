@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView, Modal } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { AntDesign } from '@expo/vector-icons';
+import { recordMatch } from '../utils/database';
 
 const Match = () => {
-  const { player1, player2, team1, team2 } = useLocalSearchParams();
+  const { player1_name, player2_name, team1_name, team2_name, player1_id, player2_id } = useLocalSearchParams();
   const [score1, setScore1] = useState(0);
   const [score2, setScore2] = useState(0);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -23,6 +24,7 @@ const Match = () => {
   };
 
   const confirmEndMatch = () => {
+    recordMatch(player1_id as string, player2_id as string, team1_name as string, team2_name as string, score1, score2); // Pass scores as numbers
     setShowConfirmation(false);
     router.back();
   };
@@ -39,8 +41,8 @@ const Match = () => {
 
         <View className="flex-row justify-between flex-1">
           {[
-            { player: player1, team: team1, score: score1, updateScore: (inc: number) => updateScore(1, inc) },
-            { player: player2, team: team2, score: score2, updateScore: (inc: number) => updateScore(2, inc) }
+            { player: player1_name, team: team1_name, score: score1, updateScore: (inc: number) => updateScore(1, inc) },
+            { player: player2_name, team: team2_name, score: score2, updateScore: (inc: number) => updateScore(2, inc) }
           ].map((data, index) => (
             <View key={index} className="flex-1 items-center justify-center mx-4">
               <Text className="text-white text-3xl font-bold mb-2">{data.player as string}</Text>

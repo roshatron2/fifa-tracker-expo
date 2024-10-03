@@ -3,19 +3,40 @@ import { View, Text, TextInput, TouchableOpacity, FlatList } from 'react-native'
 import { Picker } from '@react-native-picker/picker';
 import { router } from 'expo-router';
 import { FIFA23AllTeams } from '../../constants/shorthands';
+import { getPlayers } from '../../utils/database';
 
 type Team = { name: string; code: string };
 
-const players = ['Ajay', 'Ankush', 'Roshan'];
 
 const Log = () => {
-  const [player1, setPlayer1] = useState(players[0]);
-  const [player2, setPlayer2] = useState(players[1]);
+  const [players, setPlayers] = useState<{ name: string; id: string; }[]>([]);
+  const [player1, setPlayer1] = useState<{ name: string; id: string; } | null>(null); // Updated state type
+  const [player2, setPlayer2] = useState<{ name: string; id: string; } | null>(null); // Updated state type
   const [team1, setTeam1] = useState('');
   const [team2, setTeam2] = useState('');
   const [error, setError] = useState('');
   const [teamSuggestions1, setTeamSuggestions1] = useState<Team[]>([]);
   const [teamSuggestions2, setTeamSuggestions2] = useState<Team[]>([]);
+
+  // Add useEffect to fetch players when component mounts
+  useEffect(() => {
+    const fetchPlayers = async () => {
+      try {
+        const fetchedPlayers = await getPlayers();
+        console.log(fetchedPlayers);
+        setPlayers(fetchedPlayers); // Updated to set the entire object
+        if (fetchedPlayers.length > 0) {
+          setPlayer1(fetchedPlayers[0]); // Updated to set the entire object
+          setPlayer2(fetchedPlayers[1] || fetchedPlayers[0]); // Updated to set the entire object
+        }
+      } catch (error) {
+        console.error('Error fetching players:', error);
+        setError('Failed to load players');
+      }
+    };
+
+    fetchPlayers();
+  }, []);
 
   const filterTeams = (text: string, setter: React.Dispatch<React.SetStateAction<any[]>>) => {
     if (text) {
@@ -31,7 +52,7 @@ const Log = () => {
       setError('');
       router.push({
         pathname: '/match',
-        params: { player1, player2, team1, team2 }
+        params: { player1_name: player1?.name, player2_name: player2?.name, team1_name: team1, team2_name:  team2, player1_id: player1?.id, player2_id: player2?.id }
       });
     } else {
       setError('Please fill in both team names');
@@ -63,7 +84,7 @@ const Log = () => {
                 className="h-10 w-full"
               >
                 {players.map((player) => (
-                  <Picker.Item key={player} label={player} value={player} />
+                  <Picker.Item key={player.id} label={player.name} value={player} />
                 ))}
               </Picker>
             </View>
