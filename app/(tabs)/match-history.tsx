@@ -9,18 +9,17 @@ const MatchResultItem = ({ result }: { result: MatchResult }) => {
   
   return (
     <View className="mb-4">
-      <Text className="text-[#37003c] font-semibold mb-2">{formattedDate}</Text>
-      <View className="flex-row items-center justify-between bg-white p-4 rounded-lg">
+      <View className="flex-row items-center justify-between bg-black p-4 rounded-lg">
         <View className="flex-1">
-          <Text className="text-[#37003c] font-semibold">{result.player1_name}</Text>
+          <Text className="text-white font-semibold">{result.player1_name}</Text>
         </View>
         <View className="flex-row items-center justify-center flex-1">
-          <Text className="text-[#37003c] font-bold text-lg">
+          <Text className="text-white font-bold text-lg">
             {result.player1_goals} - {result.player2_goals}
           </Text>
         </View>
         <View className="flex-1 items-end">
-          <Text className="text-[#37003c] font-semibold">{result.player2_name}</Text>
+          <Text className="text-white font-semibold">{result.player2_name}</Text>
         </View>
       </View>
     </View>
@@ -38,13 +37,29 @@ export default function MatchHistory() {
     };
     fetchResults();
   }, []);
+
+  // Group results by date
+  const groupedResults = results.reduce((acc, result) => {
+    const date = format(new Date(result.date), 'EEE d MMM yyyy');
+    if (!acc[date]) {
+      acc[date] = [];
+    }
+    acc[date].push(result);
+    return acc;
+  }, {} as Record<string, MatchResult[]>);
+
   return (
-    <View className="bg-[#f2f2f2] p-4">
-      <FlatList
-        data={results}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <MatchResultItem result={item} />}
-      />
+    <View className="bg-black p-4">
+      {Object.entries(groupedResults).map(([date, matches]) => (
+        <View key={date}>
+          <Text className="text-white font-bold mb-2">{date}</Text>
+          <FlatList
+            data={matches}
+            keyExtractor={(item) => `${date}-${item.id}`} // Ensure unique keys
+            renderItem={({ item }) => <MatchResultItem result={item} />}
+          />
+        </View>
+      ))}
     </View>
   );
 }
