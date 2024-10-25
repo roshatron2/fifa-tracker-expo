@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
-const API_BASE_URL = 'http://192.168.0.124:8000';
+const API_BASE_URL = 'http://15.206.211.203:8000';
 
 export async function getPlayers(): Promise<{ name: string; id: string }[]> {
   try {
