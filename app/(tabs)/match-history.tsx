@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { format } from 'date-fns';
+import { useFocusEffect } from '@react-navigation/native';
 import { MatchResult, getMatchHistory } from '../../utils/database';
 
 
@@ -30,13 +31,16 @@ const MatchResultItem = ({ result }: { result: MatchResult }) => {
 export default function MatchHistory() {
   const [results, setResults] = useState<MatchResult[]>([]);
 
-  useEffect(() => {
-    const fetchResults = async () => {
-      const resultsData = await getMatchHistory();
-      setResults(resultsData);
-    };
-    fetchResults();
+  const fetchResults = useCallback(async () => {
+    const resultsData = await getMatchHistory();
+    setResults(resultsData);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchResults();
+    }, [fetchResults])
+  );
 
   // Group results by date
   const groupedResults = results.reduce((acc, result) => {

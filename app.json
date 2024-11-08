@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "fifa-tracker-expo",
-    "slug": "fifa-tracker-expo",
+    "name": "FIFA Tracker",
+    "slug": "FIFA-Tracker",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.roshatron.FIFATracker"
     },
     "web": {
       "bundler": "metro",
@@ -31,6 +32,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5cf3a336-e962-44c3-95d4-18cee11d2d57"
+      }
     }
   }
 }
