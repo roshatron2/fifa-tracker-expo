@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { getTable, PlayerStats } from '@/utils/database';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 const headers = ['Name', 'M', 'W', 'D', 'L', 'GF', 'GA', 'GD', 'Pts'];
 
@@ -53,13 +55,16 @@ const renderPlayerRow = (player: PlayerStats, index: number) => (
 export default function Table() {
   const [players, setPlayers] = useState<PlayerStats[]>([]);
 
-  useEffect(() => {
-    const fetchTable = async () => {
-      const tableData = await getTable();
-      setPlayers(tableData);
-    };
-    fetchTable();
+  const fetchTable = useCallback(async () => {
+    const tableData = await getTable();
+    setPlayers(tableData);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchTable();
+    }, [fetchTable])
+  );
 
   return (
     <View className="bg-[#1e2430] p-4">

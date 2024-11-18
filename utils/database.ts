@@ -61,6 +61,48 @@ export async function getMatchHistory(): Promise<MatchResult[]> {
   }
 }
 
+export async function createPlayer(name: string): Promise<Player | null> {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/players`, { name });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating player:', error);
+    return null;
+  }
+}
+
+export async function getHeadToHead(player1_id: string, player2_id: string): Promise<{
+  player1_wins: number,
+  player2_wins: number,
+  draws: number,
+  player1_goals: number,
+  player2_goals: number
+}> {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/head-to-head/${player1_id}/${player2_id}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching head-to-head stats:', error);
+    return {
+      player1_wins: 0,
+      player2_wins: 0,
+      draws: 0,
+      player1_goals: 0,
+      player2_goals: 0
+    };
+  }
+}
+
+export async function deletePlayer(player_id: string): Promise<void> {
+  try {
+    await axios.delete(`${API_BASE_URL}/players/${player_id}`);
+  } catch (error) {
+    console.error('Error deleting player:', error);
+  }
+}
+
 interface Player {
   name: string;
   id: string;
