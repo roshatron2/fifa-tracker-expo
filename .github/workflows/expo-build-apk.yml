@@ -3,7 +3,7 @@ name: Build APK on Commit
 on:
   push:
     branches:
-      - main  # Change this to the branch you want to trigger builds
+      - master  # Change this to the branch you want to trigger builds
 
 jobs:
   build-apk:
@@ -32,7 +32,7 @@ jobs:
       - name: Login to Expo
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: eas login --token $EXPO_TOKEN
+        run: eas login -t $EXPO_TOKEN
 
       # Build APK
       - name: Build APK

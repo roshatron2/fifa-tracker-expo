@@ -3,6 +3,7 @@ import { View, Text, FlatList } from 'react-native';
 import { format } from 'date-fns';
 import { useFocusEffect } from '@react-navigation/native';
 import { MatchResult, getMatchHistory } from '../../utils/database';
+import { Colors } from '../../constants/Colors';
 
 
 const MatchResultItem = ({ result }: { result: MatchResult }) => {
