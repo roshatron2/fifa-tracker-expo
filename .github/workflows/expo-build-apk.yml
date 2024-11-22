@@ -1,5 +1,4 @@
-name: Build APK on Commit
-
+name: EAS Build
 on:
   push:
     branches:
@@ -10,30 +9,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the code
-      - name: Checkout code
+      - name: 🏗 Checkout code
         uses: actions/checkout@v3
 
-      # Setup Node.js
-      - name: Setup Node.js
+      - name: 🏗 Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 20.18.0  # Use the version you prefer
 
-      # Install only EAS CLI globally
-      - name: Install EAS CLI
-        run: npm install -g eas-cli
+      - name: 🏗 Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
 
-      # Install dependencies
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: npm install
 
-      # Log in to Expo
-      - name: Login to Expo
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: eas login -t $EXPO_TOKEN
-
-      # Build APK
-      - name: Build APK
-        run: eas build --platform android --profile production --non-interactive
+      - name: 🚀 Build APK
+        run: eas build -p android --profile preview2 --non-interactive
