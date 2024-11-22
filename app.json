@@ -4,7 +4,7 @@
     "slug": "FIFA-Tracker",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/FIFA_23_App_Icon.jpg",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "jsEngine": "hermes",

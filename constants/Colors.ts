@@ -18,7 +18,7 @@ export const Colors = {
   dark: {
     secondary: '#ECEDEE',
     text: '#ECEDEE',
-    main: '#F4F6FB',
+    main: '#1e2430',
     tint: tintColorDark,
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',

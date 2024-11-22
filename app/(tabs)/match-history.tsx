@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, ScrollView } from 'react-native';
 import { format } from 'date-fns';
 import { useFocusEffect } from '@react-navigation/native';
 import { MatchResult, getMatchHistory } from '../../utils/database';
@@ -11,9 +11,9 @@ const MatchResultItem = ({ result }: { result: MatchResult }) => {
   
   return (
     <View className="mb-4">
-      <View className="flex-row items-center justify-between bg-black p-4 rounded-lg">
+      <View className={`flex-row items-center justify-between p-4 bg-[#1e2430] rounded-lg`}>
         <View className="flex-1">
-          <Text className="text-white font-semibold">{result.player1_name}</Text>
+          <Text className="font-semibold text-white">{result.player1_name}</Text>
         </View>
         <View className="flex-row items-center justify-center flex-1">
           <Text className="text-white font-bold text-lg">
@@ -54,17 +54,15 @@ export default function MatchHistory() {
   }, {} as Record<string, MatchResult[]>);
 
   return (
-    <View className="bg-black p-4">
+    <ScrollView className="bg-black p-4">
       {Object.entries(groupedResults).map(([date, matches]) => (
         <View key={date}>
           <Text className="text-white font-bold mb-2">{date}</Text>
-          <FlatList
-            data={matches}
-            keyExtractor={(item) => `${date}-${item.id}`} // Ensure unique keys
-            renderItem={({ item }) => <MatchResultItem result={item} />}
-          />
+          {matches.map((match) => (
+            <MatchResultItem key={`${date}-${match.id}`} result={match} />
+          ))}
         </View>
       ))}
-    </View>
+    </ScrollView>
   );
 }
