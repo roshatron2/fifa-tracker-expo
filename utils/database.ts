@@ -97,9 +97,25 @@ export async function getHeadToHead(player1_id: string, player2_id: string): Pro
 
 export async function deletePlayer(player_id: string): Promise<void> {
   try {
-    await axios.delete(`${API_BASE_URL}/players/${player_id}`);
+    await axios.delete(`${API_BASE_URL}/player/${player_id}`);
   } catch (error) {
     console.error('Error deleting player:', error);
+  }
+}
+
+export async function updatePlayer(player_id: string, newName: string): Promise<void> {
+  try {
+    await axios.put(`${API_BASE_URL}/player/${player_id}`, { name: newName });
+  } catch (error) {
+    console.error('Error updating player:', error);
+  }
+}
+
+export async function updateMatch(match_id: string, player1_goals: number, player2_goals: number): Promise<void> {
+  try {
+    await axios.put(`${API_BASE_URL}/matches/${match_id}`, { player1_goals, player2_goals });
+  } catch (error) {
+    console.error('Error updating match:', error);
   }
 }
 

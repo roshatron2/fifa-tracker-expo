@@ -68,9 +68,6 @@ export default function Table() {
 
   return (
     <View className="flex-1 bg-[#1e2430] p-4">
-      <View className="mb-4">
-        <Text className="text-white text-xl font-bold">Player Statistics</Text>
-      </View>
       <View className="rounded-lg overflow-hidden">
         {renderHeader()}
         {players.map((player, index) => renderPlayerRow(player, index))}

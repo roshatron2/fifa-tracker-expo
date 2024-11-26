@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { Picker } from '@react-native-picker/picker'
-import { getPlayers } from '../utils/database'
+import { getPlayers, deletePlayer } from '../utils/database'
 
 const DeletePlayer = () => {
   const [players, setPlayers] = useState<{ name: string; id: string }[]>([])
@@ -41,14 +41,14 @@ const DeletePlayer = () => {
           style: 'destructive',
           onPress: async () => {
             try {
-              // TODO: Implement delete functionality using your database utility
-              Alert.alert('Success', 'Player deleted successfully')
+              await deletePlayer(selectedPlayer);
               const fetchedPlayers = await getPlayers(); // Refresh the list
               setPlayers(fetchedPlayers);
-              setSelectedPlayer(null)
+              setSelectedPlayer(null);
+              Alert.alert('Success', 'Player deleted successfully');
             } catch (error) {
-              console.error('Error deleting player:', error)
-              Alert.alert('Error', 'Failed to delete player')
+              console.error('Error deleting player:', error);
+              Alert.alert('Error', 'Failed to delete player');
             }
           },
         },

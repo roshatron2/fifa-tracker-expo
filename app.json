@@ -4,14 +4,14 @@
     "slug": "FIFA-Tracker",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/FIFA_23_App_Icon.jpg",
+    "icon": "./assets/images/Skills.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "jsEngine": "hermes",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "newArchEnabled": true,
     "ios": {

@@ -1,106 +1,137 @@
-import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
+import { getMatchHistory, updateMatch } from '../utils/database'
 
 interface MatchCardProps {
-  homeTeam: string;
-  awayTeam: string;
-  homeScore: number;
-  awayScore: number;
+  player1_name: string;
+  player2_name: string;
+  player1_goals: number;
+  player2_goals: number;
   date: string;
   onEdit?: boolean;
-  onScoreChange?: (type: 'home' | 'away', change: 'increment' | 'decrement') => void;
+  onScoreChange?: (type: 'player1' | 'player2', change: 'increment' | 'decrement') => void;
+  toggleEdit?: (id: string) => void;
+  id: string;
 }
 
 const MatchCard = ({
-  homeTeam,
-  awayTeam,
-  homeScore,
-  awayScore,
+  player1_name,
+  player2_name,
+  player1_goals,
+  player2_goals,
   date,
   onEdit = false,
-  onScoreChange
+  onScoreChange,
+  toggleEdit,
+  id
 }: MatchCardProps) => {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const formattedDate = date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit'
+    });
+    const formattedTime = date.toLocaleTimeString('en-GB', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    return `${formattedDate}   ${formattedTime}`;
+  };
+
   return (
     <View className="bg-slate-800/60 rounded-lg p-4 mb-4">
-      <View className="flex-row items-center justify-between">
-        <View className="flex-row items-center">
-          <View className="w-10 h-10 bg-gray-300 rounded-md" />
-          <Text className="text-white text-lg ml-2">{homeTeam}</Text>
+      <View className="flex-row items-center">
+        <View className="w-24">
+          <Text className="text-white text-base">{player1_name}</Text>
         </View>
 
-        <View className="flex-row items-center">
+        <View className="flex-row items-center justify-center flex-1">
           {onEdit ? (
             <>
               <TouchableOpacity
-                className="bg-slate-700 w-10 h-10 rounded-full items-center justify-center"
-                onPress={() => onScoreChange?.('home', 'decrement')}
+                className="bg-slate-700 w-8 h-8 rounded-full items-center justify-center"
+                onPress={() => onScoreChange?.('player1', 'decrement')}
               >
-                <Text className="text-white text-2xl font-bold">-</Text>
+                <Text className="text-white text-xl font-bold">-</Text>
               </TouchableOpacity>
-              <Text className="text-white text-2xl font-bold mx-3">{homeScore}</Text>
+              <Text className="text-white text-xl font-bold w-8 text-center">{player1_goals}</Text>
               <TouchableOpacity
-                className="bg-slate-700 w-10 h-10 rounded-full items-center justify-center"
-                onPress={() => onScoreChange?.('home', 'increment')}
+                className="bg-slate-700 w-8 h-8 rounded-full items-center justify-center"
+                onPress={() => onScoreChange?.('player1', 'increment')}
               >
-                <Text className="text-white text-2xl font-bold">+</Text>
+                <Text className="text-white text-xl font-bold">+</Text>
               </TouchableOpacity>
-              <Text className="text-white text-2xl font-bold mx-4">-</Text>
+              <Text className="text-white text-xl font-bold w-8 text-center">-</Text>
               <TouchableOpacity
-                className="bg-slate-700 w-10 h-10 rounded-full items-center justify-center"
-                onPress={() => onScoreChange?.('away', 'decrement')}
+                className="bg-slate-700 w-8 h-8 rounded-full items-center justify-center"
+                onPress={() => onScoreChange?.('player2', 'decrement')}
               >
-                <Text className="text-white text-2xl font-bold">-</Text>
+                <Text className="text-white text-xl font-bold">-</Text>
               </TouchableOpacity>
-              <Text className="text-white text-2xl font-bold mx-3">{awayScore}</Text>
+              <Text className="text-white text-xl font-bold w-8 text-center">{player2_goals}</Text>
               <TouchableOpacity
-                className="bg-slate-700 w-10 h-10 rounded-full items-center justify-center"
-                onPress={() => onScoreChange?.('away', 'increment')}
+                className="bg-slate-700 w-8 h-8 rounded-full items-center justify-center"
+                onPress={() => onScoreChange?.('player2', 'increment')}
               >
-                <Text className="text-white text-2xl font-bold">+</Text>
+                <Text className="text-white text-xl font-bold">+</Text>
               </TouchableOpacity>
             </>
           ) : (
             <>
-              <Text className="text-white text-2xl font-bold">{homeScore}</Text>
-              <Text className="text-white text-2xl font-bold mx-4">-</Text>
-              <Text className="text-white text-2xl font-bold">{awayScore}</Text>
+              <Text className="text-white text-xl font-bold w-8 text-center">{player1_goals}</Text>
+              <Text className="text-white text-xl font-bold w-8 text-center">-</Text>
+              <Text className="text-white text-xl font-bold w-8 text-center">{player2_goals}</Text>
             </>
           )}
         </View>
 
-        <View className="flex-row items-center">
-          <Text className="text-white text-lg mr-2">{awayTeam}</Text>
-          <View className="w-10 h-10 bg-gray-300 rounded-md" />
+        <View className="w-24">
+          <Text className="text-white text-base text-right">{player2_name}</Text>
         </View>
       </View>
 
       <View className="flex-row justify-between items-center mt-4">
-        <Text className="text-gray-400">{date}</Text>
-        <TouchableOpacity>
-          <Text className="text-gray-400">Edit</Text>
+        <Text className="text-gray-400">{formatDate(date)}</Text>
+        <TouchableOpacity onPress={() => toggleEdit?.(id)}>
+          <Text className="text-gray-400">
+            {onEdit ? 'Confirm' : 'Edit'}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
   )
 }
 
-const EditMatchHistory = () => {
-  const [matches, setMatches] = React.useState([
-    {
-      id: 1,
-      homeTeam: 'Arsenal',
-      awayTeam: 'Chelsea',
-      homeScore: 3,
-      awayScore: 1,
-      date: '5/15/2023',
-      isEditing: false
-    },
-  ]);
+interface Match {
+  id: string;
+  player1_name: string;
+  player2_name: string;
+  player1_goals: number;
+  player2_goals: number;
+  date: string;
+  isEditing: boolean;
+}
 
-  const handleScoreChange = (matchId: number, type: 'home' | 'away', change: 'increment' | 'decrement') => {
+const EditMatchHistory = () => {
+  const [matches, setMatches] = useState<Match[]>([]);
+
+  useEffect(() => {
+    fetchMatches();
+  }, []);
+
+  const fetchMatches = async () => {
+    const matchesData = await getMatchHistory();
+    setMatches(matchesData.map((match) => ({
+      ...match,
+      isEditing: false
+    })));
+  };
+
+  const handleScoreChange = (matchId: string, type: 'player1' | 'player2', change: 'increment' | 'decrement') => {
     setMatches(matches.map(match => {
       if (match.id === matchId) {
-        const scoreKey = type === 'home' ? 'homeScore' : 'awayScore';
+        const scoreKey = `${type}_goals` as 'player1_goals' | 'player2_goals';
         const newScore = change === 'increment'
           ? match[scoreKey] + 1
           : Math.max(0, match[scoreKey] - 1);
@@ -114,9 +145,22 @@ const EditMatchHistory = () => {
     }));
   };
 
+  const toggleEdit = async (matchId: string) => {
+    const match = matches.find(m => m.id === matchId);
+    
+    if (match?.isEditing) {
+      // If we're finishing edit mode, update the database
+      await updateMatch(matchId, match.player1_goals, match.player2_goals);
+    }
+
+    setMatches(matches.map(match => ({
+      ...match,
+      isEditing: match.id === matchId ? !match.isEditing : match.isEditing
+    })));
+  };
+
   return (
     <View className="flex-1 bg-slate-900">
-      <Text className="text-white text-2xl font-bold p-4">Match History</Text>
       <ScrollView className="px-4">
         {matches.map((match) => (
           <MatchCard
@@ -124,6 +168,8 @@ const EditMatchHistory = () => {
             {...match}
             onEdit={match.isEditing}
             onScoreChange={(type, change) => handleScoreChange(match.id, type, change)}
+            toggleEdit={toggleEdit}
+            id={match.id}
           />
         ))}
       </ScrollView>

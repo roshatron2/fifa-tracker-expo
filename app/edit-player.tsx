@@ -54,7 +54,7 @@ const EditPlayer = () => {
           onPress: async () => {
             try {
               // TODO: Implement update functionality using your database utility
-              // await updatePlayer(selectedPlayer, newName);
+              await updatePlayer(selectedPlayer, newName);
               Alert.alert('Success', 'Player updated successfully')
               await fetchPlayers();
               setSelectedPlayer(null);
