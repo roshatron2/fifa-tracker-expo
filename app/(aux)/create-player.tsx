@@ -1,6 +1,6 @@
 import { View, Text, TextInput, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { createPlayer } from '@/utils/database';
+import { createPlayer } from '@/api/database';
 
 const CreatePlayer = () => {
   const [playerName, setPlayerName] = React.useState('');

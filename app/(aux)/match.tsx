@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView, Modal } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { AntDesign } from '@expo/vector-icons';
-import { recordMatch } from '../utils/database';
+import { recordMatch } from '../../api/database';
 
 const Match = () => {
   const { player1_name, player2_name, team1_name, team2_name, player1_id, player2_id } = useLocalSearchParams();

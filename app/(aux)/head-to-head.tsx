@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { getPlayers, getHeadToHead } from '../utils/database';
+import { getPlayers, getHeadToHead } from '../../api/database';
 
 interface Player {
   name: string;

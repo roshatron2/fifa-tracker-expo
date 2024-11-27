@@ -32,6 +32,7 @@ export default function RootLayout() {
       <NavigationContainer>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="(aux)" options={{ headerShown: false }} />
         </Stack>
       </NavigationContainer>
     </ThemeProvider>

@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { Picker } from '@react-native-picker/picker'
-import { getPlayers, deletePlayer } from '../utils/database'
+import { getPlayers, deletePlayer } from '../../api/database'
 
 const DeletePlayer = () => {
   const [players, setPlayers] = useState<{ name: string; id: string }[]>([])

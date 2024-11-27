@@ -9,7 +9,7 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { router } from "expo-router";
 import { FIFA23AllTeams } from "../../constants/shorthands";
-import { getPlayers } from "../../utils/database";
+import { getPlayers } from "../../api/database";
 
 type Team = { name: string; code: string };
 

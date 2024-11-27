@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, FlatList, ScrollView } from 'react-native';
 import { format } from 'date-fns';
 import { useFocusEffect } from '@react-navigation/native';
-import { MatchResult, getMatchHistory } from '../../utils/database';
+import { MatchResult, getMatchHistory } from '../../api/database';
 import { Colors } from '../../constants/Colors';
 
 

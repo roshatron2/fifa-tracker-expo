@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
-import { getTable, PlayerStats } from '@/utils/database';
+import { getTable, PlayerStats } from '@/api/database';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
 

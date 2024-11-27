@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
-import { getMatchHistory, updateMatch } from '../utils/database'
+import { getMatchHistory, updateMatch } from '../../api/database'
 
 interface MatchCardProps {
   player1_name: string;
@@ -118,7 +118,7 @@ const EditMatchHistory = () => {
 
   useEffect(() => {
     fetchMatches();
-  }, []);
+  }, [matches]);
 
   const fetchMatches = async () => {
     const matchesData = await getMatchHistory();
@@ -161,7 +161,7 @@ const EditMatchHistory = () => {
 
   return (
     <View className="flex-1 bg-slate-900">
-      <ScrollView className="px-4">
+      <ScrollView className="p-4">
         {matches.map((match) => (
           <MatchCard
             key={match.id}

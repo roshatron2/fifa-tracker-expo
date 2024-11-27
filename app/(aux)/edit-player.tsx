@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Alert, TextInput } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { Picker } from '@react-native-picker/picker'
-import { getPlayers } from '../utils/database'
+import { getPlayers, updatePlayer } from '../../api/database'
 
 const EditPlayer = () => {
   const [players, setPlayers] = useState<{ name: string; id: string }[]>([])
