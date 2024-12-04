@@ -1,6 +1,7 @@
 import { View, Text, TextInput, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { createPlayer } from '@/api/database';
+import { router } from 'expo-router';
 
 const CreatePlayer = () => {
   const [playerName, setPlayerName] = React.useState('');
@@ -8,6 +9,7 @@ const CreatePlayer = () => {
   const handleCreatePlayer = async () => {
     const player = await createPlayer(playerName);
     console.log(player);
+    router.push('/table');
   }
 
   return (

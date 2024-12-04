@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, Alert, TextInput } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { Picker } from '@react-native-picker/picker'
 import { getPlayers, updatePlayer } from '../../api/database'
+import { router } from 'expo-router';
 
 const EditPlayer = () => {
   const [players, setPlayers] = useState<{ name: string; id: string }[]>([])
@@ -59,6 +60,7 @@ const EditPlayer = () => {
               await fetchPlayers();
               setSelectedPlayer(null);
               setNewName('');
+              router.push('/table')
             } catch (error) {
               console.error('Error updating player:', error)
               Alert.alert('Error', 'Failed to update player')

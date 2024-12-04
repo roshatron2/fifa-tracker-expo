@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { Picker } from '@react-native-picker/picker'
 import { getPlayers, deletePlayer } from '../../api/database'
+import { router } from 'expo-router';
 
 const DeletePlayer = () => {
   const [players, setPlayers] = useState<{ name: string; id: string }[]>([])
@@ -46,6 +47,7 @@ const DeletePlayer = () => {
               setPlayers(fetchedPlayers);
               setSelectedPlayer(null);
               Alert.alert('Success', 'Player deleted successfully');
+              router.push('/table')
             } catch (error) {
               console.error('Error deleting player:', error);
               Alert.alert('Error', 'Failed to delete player');
