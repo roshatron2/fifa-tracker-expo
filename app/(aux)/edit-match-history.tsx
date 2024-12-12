@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
-import { getMatchHistory, updateMatch } from '../../api/database'
+import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native'
+import { getMatchHistory, updateMatch, deleteMatch } from '../../api/database'
+import { MaterialIcons } from '@expo/vector-icons';
 
 interface MatchCardProps {
   player1_name: string;
@@ -12,6 +13,7 @@ interface MatchCardProps {
   onScoreChange?: (type: 'player1' | 'player2', change: 'increment' | 'decrement') => void;
   toggleEdit?: (id: string) => void;
   id: string;
+  onDelete?: (id: string) => void;
 }
 
 const MatchCard = ({
@@ -23,7 +25,8 @@ const MatchCard = ({
   onEdit = false,
   onScoreChange,
   toggleEdit,
-  id
+  id,
+  onDelete,
 }: MatchCardProps) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -93,11 +96,22 @@ const MatchCard = ({
 
       <View className="flex-row justify-between items-center mt-4">
         <Text className="text-gray-400">{formatDate(date)}</Text>
-        <TouchableOpacity onPress={() => toggleEdit?.(id)}>
-          <Text className="text-gray-400">
-            {onEdit ? 'Confirm' : 'Edit'}
-          </Text>
-        </TouchableOpacity>
+        <View className="flex-row gap-4">
+          <TouchableOpacity onPress={() => toggleEdit?.(id)}>
+            <MaterialIcons 
+              name={onEdit ? "check" : "edit"} 
+              size={24} 
+              color="#9CA3AF" 
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => onDelete?.(id)}>
+            <MaterialIcons 
+              name="delete" 
+              size={24} 
+              color="#EF4444" 
+            />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   )
@@ -118,7 +132,7 @@ const EditMatchHistory = () => {
 
   useEffect(() => {
     fetchMatches();
-  }, [matches]);
+  }, []);
 
   const fetchMatches = async () => {
     const matchesData = await getMatchHistory();
@@ -149,14 +163,43 @@ const EditMatchHistory = () => {
     const match = matches.find(m => m.id === matchId);
     
     if (match?.isEditing) {
-      // If we're finishing edit mode, update the database
-      await updateMatch(matchId, match.player1_goals, match.player2_goals);
+      try {
+        // If we're finishing edit mode, update the database
+        await updateMatch(matchId, match.player1_goals, match.player2_goals);
+        // Refresh the matches after successful update
+        await fetchMatches();
+      } catch (error) {
+        console.error('Error updating match:', error);
+        Alert.alert('Error', 'Failed to update match');
+      }
+    } else {
+      // Just toggle edit mode without fetching
+      setMatches(matches.map(match => ({
+        ...match,
+        isEditing: match.id === matchId ? !match.isEditing : false
+      })));
     }
+  };
 
-    setMatches(matches.map(match => ({
-      ...match,
-      isEditing: match.id === matchId ? !match.isEditing : match.isEditing
-    })));
+  const handleDelete = async (matchId: string) => {
+    Alert.alert(
+      "Delete Match",
+      "Are you sure you want to delete this match?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            await deleteMatch(matchId);
+            setMatches(matches.filter(match => match.id !== matchId));
+          }
+        }
+      ]
+    );
   };
 
   return (
@@ -169,6 +212,7 @@ const EditMatchHistory = () => {
             onEdit={match.isEditing}
             onScoreChange={(type, change) => handleScoreChange(match.id, type, change)}
             toggleEdit={toggleEdit}
+            onDelete={handleDelete}
             id={match.id}
           />
         ))}

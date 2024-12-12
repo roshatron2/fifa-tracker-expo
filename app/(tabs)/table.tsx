@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView, RefreshControl } from 'react-native';
 import { getTable, PlayerStats } from '@/api/database';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
@@ -54,10 +54,12 @@ const renderPlayerRow = (player: PlayerStats, index: number) => (
 
 export default function Table() {
   const [players, setPlayers] = useState<PlayerStats[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   const fetchTable = useCallback(async () => {
     const tableData = await getTable();
     setPlayers(tableData);
+    setRefreshing(false);
   }, []);
 
   useFocusEffect(
@@ -66,12 +68,30 @@ export default function Table() {
     }, [fetchTable])
   );
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchTable();
+  }, [fetchTable]);
+
+
   return (
-    <View className="flex-1 bg-[#1e2430] p-4">
-      <View className="rounded-lg overflow-hidden">
-        {renderHeader()}
-        {players.map((player, index) => renderPlayerRow(player, index))}
+    <ScrollView 
+      className="flex-1 bg-[#1e2430]"
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={['#ffffff']}
+          tintColor="#ffffff"
+        />
+      }
+    >
+      <View className="p-4">
+        <View className="rounded-lg overflow-hidden">
+          {renderHeader()}
+          {players.map((player, index) => renderPlayerRow(player, index))}
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }

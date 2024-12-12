@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, Text, FlatList, ScrollView } from 'react-native';
+import { View, Text, FlatList, ScrollView, RefreshControl } from 'react-native';
 import { format } from 'date-fns';
-import { useFocusEffect } from '@react-navigation/native';
 import { MatchResult, getMatchHistory } from '../../api/database';
 import { Colors } from '../../constants/Colors';
 
@@ -31,17 +30,23 @@ const MatchResultItem = ({ result }: { result: MatchResult }) => {
 
 export default function MatchHistory() {
   const [results, setResults] = useState<MatchResult[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   const fetchResults = useCallback(async () => {
     const resultsData = await getMatchHistory();
     setResults(resultsData);
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchResults();
-    }, [fetchResults])
-  );
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchResults();
+    setRefreshing(false);
+  }, [fetchResults]);
+
+  // Initial fetch on mount
+  useEffect(() => {
+    fetchResults();
+  }, [fetchResults]);
 
   // Group results by date
   const groupedResults = results.reduce((acc, result) => {
@@ -54,7 +59,16 @@ export default function MatchHistory() {
   }, {} as Record<string, MatchResult[]>);
 
   return (
-    <ScrollView className="bg-black p-4">
+    <ScrollView 
+      className="bg-black p-4"
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          tintColor="white"
+        />
+      }
+    >
       {Object.entries(groupedResults).map(([date, matches]) => (
         <View key={date}>
           <Text className="text-white font-bold mb-2">{date}</Text>

@@ -119,6 +119,24 @@ export async function updateMatch(match_id: string, player1_goals: number, playe
   }
 }
 
+export async function deleteMatch(match_id: string): Promise<void> {
+  try {
+    await axios.delete(`${API_BASE_URL}/matches/${match_id}`);
+  } catch (error) {
+    console.error('Error deleting match:', error);
+  }
+}
+
+export async function getPlayerStats(player_id: string): Promise<PlayerStats | null> {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/player/${player_id}/stats`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching player stats:', error);
+    return null;
+  }
+}
+
 interface Player {
   name: string;
   id: string;
@@ -155,5 +173,30 @@ export interface PlayerStats {
   losses: number;
   draws: number;
   points: number;
+}
+
+export interface DetailedPlayerStats {
+  id: string;
+  name: string;
+  total_matches: number;
+  total_goals_scored: number;
+  total_goals_conceded: number;
+  wins: number;
+  losses: number;
+  draws: number;
+  points: number;
+  win_rate: number;
+  average_goals_scored: number;
+  average_goals_conceded: number;
+  highest_wins_against: {
+    [playerName: string]: number;
+  };
+  highest_losses_against: {
+    [playerName: string]: number;
+  };
+  winrate_over_time: {
+    date: string;
+    winrate: number;
+  }[];
 }
 
