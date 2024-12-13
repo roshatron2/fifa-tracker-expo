@@ -127,7 +127,7 @@ export async function deleteMatch(match_id: string): Promise<void> {
   }
 }
 
-export async function getPlayerStats(player_id: string): Promise<PlayerStats | null> {
+export async function getPlayerStats(player_id: string): Promise<DetailedPlayerStats | null> {
   try {
     const response = await axios.get(`${API_BASE_URL}/player/${player_id}/stats`);
     return response.data;
