@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
-const API_BASE_URL = 'https://precious-sincere-herring.ngrok-free.app';
+const API_BASE_URL = 'https://0462-15-207-114-96.ngrok-free.app/app';
 
 export async function getPlayers(): Promise<{ name: string; id: string }[]> {
   try {
