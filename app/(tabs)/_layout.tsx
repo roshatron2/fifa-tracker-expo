@@ -17,9 +17,20 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
+        name="tournaments"
+        options={{
+          title: 'Tournaments',
+          headerTitle: '',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="trophy-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="match-history"
         options={{
           title: 'History',
+          headerTitle: '',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="football-outline" size={size} color={color} />
           ),
@@ -29,6 +40,7 @@ export default function TabsLayout() {
         name="table"
         options={{
           title: 'Table',
+          headerTitle: '',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="list-outline" size={size} color={color} />
           ),
@@ -38,6 +50,7 @@ export default function TabsLayout() {
         name="log"
         options={{
           title: 'Log Match',
+          headerTitle: '',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="add-circle-outline" size={size} color={color} />
           ),
@@ -47,6 +60,7 @@ export default function TabsLayout() {
         name="settings"
         options={{
           title: 'Settings',
+          headerTitle: '',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="settings-outline" size={size} color={color} />
           ),

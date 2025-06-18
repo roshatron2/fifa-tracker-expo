@@ -1,0 +1,94 @@
+# Cursor Rules for FIFA Tracker Expo App
+
+## CSS/Styling Guidelines
+
+### Primary Rule: Use Tailwind CSS Classes
+- **ALWAYS** use Tailwind CSS classes instead of writing custom CSS in StyleSheet.create() for TSX files
+- Only write custom CSS when absolutely necessary (complex animations, platform-specific styles, or when Tailwind doesn't provide the needed functionality)
+- Use the `className` prop with Tailwind classes instead of the `style` prop with StyleSheet objects
+
+### Tailwind CSS Implementation
+- Use `nativewind` for React Native Tailwind CSS integration
+- Import styles: `import { styled } from 'nativewind'`
+- Use className prop: `className="bg-black text-white p-4 rounded-lg"`
+
+### When Custom CSS is Allowed
+- Complex animations that require specific keyframes
+- Platform-specific styles (iOS vs Android differences)
+- Third-party component styling that doesn't support className
+- Performance-critical components where inline styles are necessary
+
+### Examples
+
+✅ **Preferred (Tailwind CSS):**
+```tsx
+<View className="bg-gray-800 p-4 rounded-xl flex-row items-center">
+  <Text className="text-white text-lg font-bold">Tournament Name</Text>
+  <TouchableOpacity className="bg-blue-500 p-2 rounded-lg ml-auto">
+    <Ionicons name="add" size={24} className="text-white" />
+  </TouchableOpacity>
+</View>
+```
+
+❌ **Avoid (Custom CSS):**
+```tsx
+<View style={styles.container}>
+  <Text style={styles.title}>Tournament Name</Text>
+  <TouchableOpacity style={styles.button}>
+    <Ionicons name="add" size={24} style={styles.icon} />
+  </TouchableOpacity>
+</View>
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#1f2937',
+    padding: 16,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  title: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  button: {
+    backgroundColor: '#0284c7',
+    padding: 8,
+    borderRadius: 8,
+    marginLeft: 'auto',
+  },
+  icon: {
+    color: '#ffffff',
+  },
+});
+```
+
+### File Structure
+- Keep all Tailwind classes in the JSX/TSX files
+- Avoid creating separate style objects unless absolutely necessary
+- Use Tailwind's responsive and state variants when needed
+
+### Color Scheme
+- Use the existing dark theme colors:
+  - Background: `bg-black` (#000000)
+  - Cards: `bg-gray-800` (#1f2937)
+  - Text: `text-white` (#ffffff)
+  - Secondary text: `text-gray-400` (#9ca3af)
+  - Primary accent: `text-blue-500` (#3b82f6)
+  - Danger: `text-red-500` (#ef4444)
+
+### Spacing and Layout
+- Use Tailwind's spacing scale: `p-4`, `m-2`, `gap-3`, etc.
+- Use Flexbox utilities: `flex`, `flex-row`, `items-center`, `justify-between`
+- Use responsive utilities when needed: `sm:`, `md:`, `lg:`
+
+### Typography
+- Use Tailwind's text utilities: `text-sm`, `text-lg`, `font-bold`, `text-center`
+- Avoid custom font sizes unless using specific brand fonts
+
+### Border and Shadows
+- Use Tailwind's border utilities: `border`, `border-gray-700`, `rounded-lg`
+- Use shadow utilities: `shadow-lg`, `shadow-black/50`
+
+Remember: The goal is to maintain consistency and reduce custom CSS while leveraging Tailwind's utility-first approach for better maintainability and faster development. 

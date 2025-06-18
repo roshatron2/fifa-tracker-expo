@@ -8,6 +8,13 @@ const Settings = () => {
     <View className="flex-1 bg-black p-5 justify-center">
       <TouchableOpacity
         className="bg-white rounded p-2 mb-3"
+        onPress={() => router.push('/tournaments')}
+      >
+        <Text className="text-black text-center">Tournaments</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        className="bg-white rounded p-2 mb-3"
         onPress={() => router.push('/manage-players')}
       >
         <Text className="text-black text-center">Manage Players</Text>
