@@ -67,13 +67,15 @@ const DeletePlayer = () => {
           selectedValue={selectedPlayer}
           onValueChange={(itemValue) => setSelectedPlayer(itemValue)}
           className="h-12"
+          style={{ color: '#000' }}
         >
-          <Picker.Item label="Select a player..." value={null} />
+          <Picker.Item label="Select a player..." value={null} color="#666" />
           {players.map((player) => (
             <Picker.Item 
               key={player.id} 
               label={player.name} 
               value={player.id} 
+              color="#000"
             />
           ))}
         </Picker>

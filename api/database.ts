@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
-const API_BASE_URL = 'https://0462-15-207-114-96.ngrok-free.app/app';
+const API_BASE_URL = process.env.API_BASE_URL || 'http://192.168.0.120:8000/api/v1';
 
 export async function getPlayers(): Promise<{ name: string; id: string }[]> {
   try {
@@ -43,10 +43,25 @@ export async function recordMatch(player1_id: string, player2_id: string, team1:
 
 export async function getTable(): Promise<PlayerStats[]> {
   try {
+    console.log('Attempting to fetch from:', `${API_BASE_URL}/stats`);
     const response = await axios.get(`${API_BASE_URL}/stats`);
+    console.log('Successfully fetched stats:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching table:', error);
+    if (axios.isAxiosError(error)) {
+      console.error('Axios error details:', {
+        message: error.message,
+        code: error.code,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        config: {
+          url: error.config?.url,
+          method: error.config?.method,
+          timeout: error.config?.timeout
+        }
+      });
+    }
     return [];
   }
 }
@@ -129,7 +144,7 @@ export async function deleteMatch(match_id: string): Promise<void> {
 
 export async function getPlayerStats(player_id: string): Promise<DetailedPlayerStats | null> {
   try {
-    const response = await axios.get(`${API_BASE_URL}/player/${player_id}/stats`);
+    const response = await axios.get(`${API_BASE_URL}/players/${player_id}/stats`);
     return response.data;
   } catch (error) {
     console.error('Error fetching player stats:', error);

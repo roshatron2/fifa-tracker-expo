@@ -6,6 +6,7 @@ import { DetailedPlayerStats } from '../../api/database'
 import { Card } from '../../components/Card'
 import { Picker } from "@react-native-picker/picker"
 
+
 const PlayerStats = () => {
   const { playerId: initialPlayerId } = useLocalSearchParams()
   const [stats, setStats] = useState<DetailedPlayerStats | null>(null)
@@ -47,20 +48,21 @@ const PlayerStats = () => {
           selectedValue={selectedPlayerId}
           onValueChange={setSelectedPlayerId}
           className="h-12"
-          dropdownIconColor="white"
+          dropdownIconColor="black"
           itemStyle={{ color: 'black' }}
+          style={{ color: 'black' }}
         >
           <Picker.Item 
             label="Select a player" 
             value="" 
-            color={selectedPlayerId === "" ? "white" : "black"}
+            color='black'
           />
           {players.map((player) => (
             <Picker.Item 
               key={player.id} 
               label={player.name} 
               value={player.id}
-              color={selectedPlayerId === player.id ? "white" : "black"}
+              color='black'
             />
           ))}
         </Picker>
