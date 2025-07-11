@@ -10,33 +10,61 @@ import { Picker } from "@react-native-picker/picker";
 import { router } from "expo-router";
 import { FIFA23AllTeams } from "../../constants/shorthands";
 import { getPlayers } from "../../api/database";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Team = { name: string; code: string };
 
+interface Tournament {
+  id: string;
+  name: string;
+  playerIds: string[];
+}
+
 const Log = () => {
-  const [players, setPlayers] = useState<{ name: string; id: string }[]>([]);
+  const [allPlayers, setAllPlayers] = useState<{ name: string; id: string }[]>([]);
+  const [tournamentPlayers, setTournamentPlayers] = useState<{ name: string; id: string }[]>([]);
+  const [currentTournament, setCurrentTournament] = useState<Tournament | null>(null);
   const [player1, setPlayer1] = useState<{ name: string; id: string } | null>(
     null
-  ); // Updated state type
+  );
   const [player2, setPlayer2] = useState<{ name: string; id: string } | null>(
     null
-  ); // Updated state type
+  );
   const [team1, setTeam1] = useState("");
   const [team2, setTeam2] = useState("");
   const [error, setError] = useState("");
   const [teamSuggestions1, setTeamSuggestions1] = useState<Team[]>([]);
   const [teamSuggestions2, setTeamSuggestions2] = useState<Team[]>([]);
 
-  // Add useEffect to fetch players when component mounts
+  // Load current tournament and filter players
+  useEffect(() => {
+    const loadCurrentTournament = async () => {
+      try {
+        const tournamentId = await AsyncStorage.getItem('selectedTournamentId');
+        if (tournamentId) {
+          const tournaments = await AsyncStorage.getItem('tournaments');
+          if (tournaments) {
+            const tournamentList = JSON.parse(tournaments);
+            const tournament = tournamentList.find((t: any) => t.id === tournamentId);
+            if (tournament) {
+              setCurrentTournament(tournament);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error loading current tournament:', error);
+      }
+    };
+
+    loadCurrentTournament();
+  }, []);
+
+  // Fetch all players and filter by tournament
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
         const fetchedPlayers = await getPlayers();
-        setPlayers(fetchedPlayers); // Updated to set the entire object
-        if (fetchedPlayers.length > 0) {
-          setPlayer1(fetchedPlayers[0]); // Updated to set the entire object
-          setPlayer2(fetchedPlayers[1] || fetchedPlayers[0]); // Updated to set the entire object
-        }
+        setAllPlayers(fetchedPlayers);
       } catch (error) {
         console.error("Error fetching players:", error);
         setError("Failed to load players");
@@ -45,6 +73,28 @@ const Log = () => {
 
     fetchPlayers();
   }, []);
+
+  // Filter players based on current tournament
+  useEffect(() => {
+    if (currentTournament && allPlayers.length > 0) {
+      const filtered = allPlayers.filter(player => 
+        currentTournament.playerIds && currentTournament.playerIds.includes(player.id)
+      );
+      setTournamentPlayers(filtered);
+      
+      // Reset player selections if current players are not in tournament
+      if (player1 && !filtered.find(p => p.id === player1.id)) {
+        setPlayer1(filtered.length > 0 ? filtered[0] : null);
+      }
+      if (player2 && !filtered.find(p => p.id === player2.id)) {
+        setPlayer2(filtered.length > 1 ? filtered[1] : filtered[0] || null);
+      }
+    } else {
+      setTournamentPlayers([]);
+      setPlayer1(null);
+      setPlayer2(null);
+    }
+  }, [currentTournament, allPlayers]);
 
   const filterTeams = (
     text: string,
@@ -61,6 +111,16 @@ const Log = () => {
   };
 
   const handleNext = () => {
+    if (!currentTournament) {
+      setError("Please select a tournament first");
+      return;
+    }
+    
+    if (tournamentPlayers.length < 2) {
+      setError("Tournament needs at least 2 players to log a match");
+      return;
+    }
+
     if (team1.trim() && team2.trim()) {
       setError("");
       router.push({
@@ -97,9 +157,46 @@ const Log = () => {
     setSuggestions([]);
   };
 
+  if (!currentTournament) {
+    return (
+      <View className="flex-1 bg-black p-5 justify-center items-center">
+        <Text className="text-white text-2xl text-center mb-5">No Tournament Selected</Text>
+        <Text className="text-gray-400 text-base text-center mb-5">
+          Please select a tournament to log matches
+        </Text>
+        <TouchableOpacity
+          className="bg-blue-500 rounded-lg px-6 py-3"
+          onPress={() => router.push('/(tabs)/tournaments')}
+        >
+          <Text className="text-white font-semibold">Select Tournament</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  if (tournamentPlayers.length < 2) {
+    return (
+      <View className="flex-1 bg-black p-5 justify-center items-center">
+        <Text className="text-white text-2xl text-center mb-5">Not Enough Players</Text>
+        <Text className="text-gray-400 text-base text-center mb-5">
+          Tournament needs at least 2 players to log matches
+        </Text>
+        <TouchableOpacity
+          className="bg-blue-500 rounded-lg px-6 py-3"
+          onPress={() => router.push('/(tabs)/tournaments')}
+        >
+          <Text className="text-white font-semibold">Add Players</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   return (
     <View className="flex-1 bg-black p-5 justify-center">
-      <Text className="text-white text-2xl text-center mb-5">Match</Text>
+      <View className="mb-5">
+        <Text className="text-white text-2xl text-center mb-2">Match</Text>
+        <Text className="text-gray-400 text-center">{currentTournament.name}</Text>
+      </View>
 
       <View className="flex-row justify-between mb-5">
         {[
@@ -114,7 +211,7 @@ const Log = () => {
                 onValueChange={data.setPlayer}
                 className="h-10 w-full"
               >
-                {players.map((player) => (
+                {tournamentPlayers.map((player) => (
                   <Picker.Item
                     key={player.id}
                     label={player.name}

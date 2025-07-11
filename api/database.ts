@@ -152,6 +152,71 @@ export async function getPlayerStats(player_id: string): Promise<DetailedPlayerS
   }
 }
 
+export async function getTournaments(): Promise<Tournament[]> {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/tournaments`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching tournaments:', error);
+    return [];
+  }
+}
+
+export async function createTournament(name: string, description: string, player_ids: string[]): Promise<Tournament | null> {
+
+  try {
+    const response = await axios.post(`${API_BASE_URL}/tournaments`, { name, description, player_ids });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating tournament:', error);
+    return null;
+  }
+}
+
+export async function deleteTournament(tournament_id: string): Promise<void> {
+  try {
+    await axios.delete(`${API_BASE_URL}/tournaments/${tournament_id}`);
+  } catch (error) {
+    console.error('Error deleting tournament:', error);
+  }
+}
+
+export async function addPlayerToTournament(tournament_id: string, player_id: string): Promise<void> {
+  try {
+    await axios.post(`${API_BASE_URL}/tournaments/${tournament_id}/players`, { player_id });
+  } catch (error) {
+    console.error('Error adding player to tournament:', error);
+  }
+}
+
+export async function removePlayerFromTournament(tournament_id: string, player_id: string): Promise<void> {
+  try {
+    await axios.delete(`${API_BASE_URL}/tournaments/${tournament_id}/players/${player_id}`);
+  } catch (error) {
+    console.error('Error removing player from tournament:', error);
+  }
+}
+
+export async function getTournamentPlayers(tournament_id: string): Promise<Player[]> {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/tournaments/${tournament_id}/players`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching tournament players:', error);
+    return [];
+  }
+}
+
+export async function getTournamentMatches(tournament_id: string): Promise<Match[]> {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/tournaments/${tournament_id}/matches`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching tournament matches:', error);
+    return [];
+  }
+}
+
 interface Player {
   name: string;
   id: string;
@@ -166,6 +231,12 @@ interface Match {
   team1: string;
   team2: string;
   date: string;
+}
+
+export interface Tournament {
+  id: string;
+  name: string;
+  player_ids: string[];
 }
 
 export interface MatchResult  {
